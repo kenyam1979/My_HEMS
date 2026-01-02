@@ -92,13 +92,10 @@ External systems (outside EC2)
 | (weather HTTP API)      |     | (standard template pulls)  |
 +-------------------------+     +----------------------------+
 
-+---------------------------------------------------------------+
-| Tepco billing pipeline (AWS)                                  |
-| Manual CSV upload --> AWS S3 --> AWS Glue (ETL) --> Athena    |
-|                                       |                       |
-|                                       v                       |
-|                           Athena queried by Zabbix / Grafana  |
-+---------------------------------------------------------------+
++------------------------------------------------------------------------------------+
+| Tepco billing pipeline (AWS)                                                       |
+| Manual CSV upload --> AWS S3 --> AWS Glue (ETL) --> Athena --> Queried by Grafana  |
++------------------------------------------------------------------------------------+
 
 Connections (summary):
 - SwitchBot Devices --> SwitchBot Cloud API --> Zabbix (script polls) --> queried by Grafana
