@@ -1,6 +1,8 @@
 # 1. Frontend
 
 ## 1.1 Grafana dashboard
+![dashboard](./resources/Screenshot%20from%202026-01-02%2016-51-47.png)
+
 - Grafana
 - Standard docker image
 - Port: 3000
