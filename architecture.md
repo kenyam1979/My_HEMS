@@ -20,8 +20,9 @@
 ### 2.1.1 Switchbot
 - Connect via Zabbix
 - Script called by zabbix for fetch switchbot standard APIs
+  - The script is copied  at Zabbix server docker image
+  - (Reference) https://qiita.com/d_yan/items/805f50a6f1139fa94215
 - Switchbot APIS https://github.com/OpenWonderLabs/SwitchBotAPI
-- (Reference) https://qiita.com/d_yan/items/805f50a6f1139fa94215
 
 #### 2.1.1.1 Devices
 - Living
@@ -38,7 +39,7 @@
 
 ## 2.2 Open Weather Map
 - Connect via Zabbix standard template
-  - https://openweathermap.org/api
+- https://openweathermap.org/api
 
 ## 2.3 Tepco billing
 - Connect via aws Athena
