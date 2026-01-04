@@ -1,6 +1,7 @@
-# 1. Frontend
+# HEMS
+## 1. Frontend
 
-## 1.1 Grafana dashboard
+### 1.1 Grafana dashboard
 ![dashboard](./resources/Screenshot%20from%202026-01-02%2016-51-47.png)
 
 - Grafana
@@ -8,8 +9,8 @@
 - Port: 3000
 - Server: EC2
 
-# 2. Backend
-## 2.1 Zabbix
+## 2. Backend
+### 2.1 Zabbix
 
 - Zabbix
 - Standard docker image
@@ -17,14 +18,14 @@
 - Server: EC2
 - DB: PostgreSQL
 
-### 2.1.1 Switchbot
+#### 2.1.1 Switchbot
 - Connect via Zabbix
 - Script called by zabbix for fetch switchbot standard APIs
   - The script is copied  at Zabbix server docker image
   - (Reference) https://qiita.com/d_yan/items/805f50a6f1139fa94215
 - Switchbot APIS https://github.com/OpenWonderLabs/SwitchBotAPI
 
-#### 2.1.1.1 Devices
+##### 2.1.1.1 Devices
 - Living
   - Meter Plus
       - Device name: 温湿度計1
@@ -37,15 +38,25 @@
   - Plug Mini
       - Device name: オイルヒーター
 
-## 2.2 Open Weather Map
+### 2.2 Open Weather Map
 - Connect via Zabbix standard template
 - https://openweathermap.org/api
 
-## 2.3 Tepco billing
+### 2.3 aws
+- Store data on S3
+- Connect via aws Athena
+
+#### 2.3.1 Tepco billing
 - Connect via aws Athena
 - Manually uploaded data files are ETL'd by glue and queriy via Athena
 
-# 3. Server 
+### 2.3.2 Power consumption (under consideration)
+- Load data from raspi to S3 or call api Zabbix 
+- Raspi is connected with CT sensors
+- CT sensors measure the current at switchboard
+
+
+## 3. Server 
 - aws EC2
 - micro
 - OS: Amazon Linux
@@ -53,33 +64,34 @@
 
 
 
-# 4. Diagram
+## 4. Diagram
+### 4.1 Architectural diagram
 ```
-+-------------------------------+
-|        AWS EC2 (micro)        |
-|                               |
-|    Zabbix API calls/polls     |
-|             |                 |
-|             |                 |
-|             v                 |
-|     +---------------+         |
-|     | Zabbix         |        |
-|     | (Docker)       |        | 
-|     | Port: 8000     |        |
-|     +-------+--------+        |
-|             |                 |
-| 　　　  　　　|                 |
-|             v                 |
-|     +----------------+        |
-|     | Grafana        |        |
-|     | (Docker)       |        |
-|     | Port: 3000     |        |
-|     +-------+--------+        |
-|             |                 |
-|  　　  　    |                 |
-|             v                 |
-|        User Browser           |
-+-------------------------------+
++---------------------------------------------------+
+|                  AWS EC2 (micro)                  |
+|                                                   |
+|              Zabbix API calls/polls               |
+|                       |                           |
+|                       |                           |
+|                       v                           |
+|     +-----------------------------------+         |
+|     | Zabbix                             |        |
+|     | (Docker)                           |        | 
+|     | Port: 8000                         |        |
+|     +-------+----------------------------+        |
+|                       |                           |
+| 　　　  　　　          |                           |
+|                       v                           |
+|     +------------------------------------+        |
+|     | Grafana                            |        |
+|     | (Docker)                           |        |
+|     | Port: 3000                         |        |
+|     +-------+----------------------------+        |
+|                       |                           |
+|  　　  　              |                           |
+|                       v                           |
+|                  User Browser                     |
++---------------------------------------------------+
 
 External systems (outside EC2)
 +----------------------+     +-------------------------+     +----------------------------+
@@ -97,9 +109,16 @@ External systems (outside EC2)
 | Manual CSV upload --> AWS S3 --> AWS Glue (ETL) --> Athena --> Queried by Grafana  |
 +------------------------------------------------------------------------------------+
 
-Connections (summary):
-- SwitchBot Devices --> SwitchBot Cloud API --> Zabbix (script polls) --> queried by Grafana
-- OpenWeatherMap API --> Zabbix (standard template) --> queried by Grafana
-- Manual Tepco files --> S3 --> Glue ETL --> Athena --> queried by Grafana
-- User Browser --> HTTP:3000 --> Grafana (on EC2)
++------------------------------------------------------------------------------------+
+| Power consumption (to be designed)                                                 |
++------------------------------------------------------------------------------------+
+
 ```
+### 4.2 Connections (summary):
+- Backend
+  - SwitchBot Devices --> SwitchBot Cloud API --> Zabbix (script polls) --> queried by Grafana
+  - OpenWeatherMap API --> Zabbix (standard template) --> queried by Grafana
+  - Manual Tepco files --> S3 --> Glue ETL --> Athena --> queried by Grafana
+  - (to be designed)
+- Frontend
+  - User Browser --> HTTP:3000 --> Grafana (on EC2)
